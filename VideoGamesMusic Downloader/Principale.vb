@@ -6,7 +6,7 @@ Public Class Principale
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Try
-            CLB_Risultati.DoubleBuffering(True)
+            Lsv_Risultati.DoubleBuffering(True)
 
             Pb_Album.DoubleBuffering(True)
             Pb_Canzone.DoubleBuffering(True)
@@ -15,10 +15,6 @@ Public Class Principale
             Lbl_Album.DoubleBuffering(True)
             Lbl_Canzone.DoubleBuffering(True)
             Lbl_Download.DoubleBuffering(True)
-
-            Lbl_Album.Text = String.Empty
-            Lbl_Canzone.Text = String.Empty
-            Lbl_Download.Text = String.Empty
         Catch ex As Exception
             MessageBox.Show(ex.ToString, "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
@@ -49,8 +45,8 @@ Public Class Principale
 
     Private Sub Chk_Seleziona_CheckedChanged(sender As Object, e As EventArgs) Handles Chk_Seleziona.CheckedChanged
         Try
-            For I As Integer = 0 To CLB_Risultati.Items.Count - 1
-                CLB_Risultati.SetItemChecked(I, Chk_Seleziona.Checked)
+            For Each Itm As ListViewItem In Lsv_Risultati.Items
+                Itm.Checked = Chk_Seleziona.Checked
             Next
         Catch ex As Exception
             MessageBox.Show(ex.ToString, "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -75,7 +71,7 @@ Public Class Principale
                 Exit Sub
             End If
 
-            If CLB_Risultati.CheckedItems.Count = 0 Then
+            If Lsv_Risultati.CheckedItems.Count = 0 Then
                 MessageBox.Show("Seleziona qualcosa da scaricare!", "Attenzione", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 Exit Sub
             End If
@@ -101,7 +97,7 @@ Public Class Principale
         Btn_Cerca.InvocaMetodoSicuro(Sub() Btn_Cerca.Enabled = Not SpengiIcosi)
         Btn_Scarica.InvocaMetodoSicuro(Sub() Btn_Scarica.Enabled = Not SpengiIcosi)
         Btn_SalvaIn.InvocaMetodoSicuro(Sub() Btn_SalvaIn.Enabled = Not SpengiIcosi)
-        CLB_Risultati.InvocaMetodoSicuro(Sub() CLB_Risultati.Enabled = Not SpengiIcosi)
+        Lsv_Risultati.InvocaMetodoSicuro(Sub() Lsv_Risultati.Enabled = Not SpengiIcosi)
         Chk_Seleziona.InvocaMetodoSicuro(Sub() Chk_Seleziona.Enabled = Not SpengiIcosi)
 
         Pb_Album.InvocaMetodoSicuro(Sub() Pb_Album.Value = 0)
@@ -122,22 +118,41 @@ Public Class Principale
                                End If
 
                                'EchoTopic
-                               Dim Corpo As String = Regex.Matches(HTMLRicerca, "EchoTopic([\s\S]*?)<\/div>")(0).Value
+                               Dim Corpo As String = Regex.Match(HTMLRicerca, "table.*?albumList([\s\S]*?)<\/table>").Value
+                               Dim RowLst As MatchCollection = Regex.Matches(Corpo, "<tr>([\s\S]*?)<\/tr>")
 
-                               'CLB_Risultati.InvocaMetodoSicuro(Sub() CLB_Risultati.Items.Clear())
-                               Dim RisList As New Dictionary(Of String, String)
+                               Dim AlbumLst As New List(Of Album)
 
-                               For Each Ris As Match In Regex.Matches(Corpo, "<a href=""(?<LINK>[\s\S]*?)"">(?<NOME>[\s\S]*?)<\/a>")
-                                   Dim RawLink As String = Ris.Groups("LINK").Value.Trim
-                                   Dim RawNome As String = Ris.Groups("NOME").Value.Trim
+                               'For Each Ris As Match In Regex.Matches(Corpo, "<td.*?albumIcon.*?img src.*?""(?<IMMAGINE>[\s\S]*?)"">|<a href=""(?<LINK>[\s\S]*?)"">(?<NOME>[\s\S]*?)<\/a>")
+                               For M As Integer = 1 To RowLst.Count - 1
+                                   Dim RawImg As String = Regex.Match(RowLst(M).Value, "<td.*?albumIcon.*?img src.*?""([\s\S]*?)""").Groups(1).Value.Trim
+                                   Dim RawLink As String = Regex.Match(RowLst(M).Value, "<td.*?albumIcon.*?a href.*?""([\s\S]*?)""").Groups(1).Value.Trim
+                                   Dim RawNome As String = Regex.Matches(RowLst(M).Value, "a href.*?"">([\s\S]*?)<\/a>")(1).Groups(1).Value.Trim
 
-                                   RisList.Add(RawLink, RawNome)
+                                   Dim AlbumImg As Image = OttieniImmagine(RawImg)
+
+                                   AlbumLst.Add(New Album(AlbumImg, RawNome, RawLink))
                                Next
 
-                               Lbl_Risultati.InvocaMetodoSicuro(Sub() Lbl_Risultati.Text = "Risultati ricerca (" & RisList.Count & ")")
+                               Lbl_Risultati.InvocaMetodoSicuro(Sub() Lbl_Risultati.Text = "Risultati ricerca (" & AlbumLst.Count & ")")
 
-                               CLB_Risultati.InvocaMetodoSicuro(Sub() CLB_Risultati.DataSource = RisList.ToList)
-                               CLB_Risultati.InvocaMetodoSicuro(Sub() CLB_Risultati.DisplayMember = "Value")
+                               Lsv_Risultati.InvocaMetodoSicuro(Sub() Lsv_Risultati.BeginUpdate())
+                               Lsv_Risultati.InvocaMetodoSicuro(Sub() Lsv_Risultati.Items.Clear())
+
+                               Dim ImgLstBoh As New ImageList With {.ColorDepth = ColorDepth.Depth32Bit, .ImageSize = New Drawing.Size(60, 60)}
+                               Lsv_Risultati.InvocaMetodoSicuro(Sub() Lsv_Risultati.LargeImageList = ImgLstBoh)
+
+                               For Each Alb As Album In AlbumLst
+                                   Lsv_Risultati.InvocaMetodoSicuro(Sub() ImgLstBoh.Images.Add(Alb.Immagine))
+
+                                   Dim Itm As New ListViewItem(Alb.Nome)
+                                   Itm.SubItems.Add(Alb.Link)
+                                   Itm.ImageIndex = ImgLstBoh.Images.Count - 1
+
+                                   Lsv_Risultati.InvocaMetodoSicuro(Sub() Lsv_Risultati.Items.Add(Itm))
+                               Next
+
+                               Lsv_Risultati.InvocaMetodoSicuro(Sub() Lsv_Risultati.EndUpdate())
                            Catch ex As Exception
                                MessageBox.Show(ex.ToString, "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error)
                            Finally
@@ -154,17 +169,18 @@ Public Class Principale
                                Dim SalvaIn As String = Txt_SalvaIn.Text.Trim
                                If Not IO.Directory.Exists(SalvaIn) Then IO.Directory.CreateDirectory(SalvaIn)
 
-                               Pb_Album.InvocaMetodoSicuro(Sub() Pb_Album.Maximum = CLB_Risultati.CheckedItems.Count)
+                               Pb_Album.InvocaMetodoSicuro(Sub() Pb_Album.Maximum = Lsv_Risultati.CheckedItems.Count)
 
-                               For S As Integer = 0 To CLB_Risultati.CheckedItems.Count - 1
+                               For S As Integer = 0 To Lsv_Risultati.InvocaFunzioneSicuro(Function() Lsv_Risultati.CheckedItems.Count - 1)
 
                                    Dim CreaUnaVariabileLocaleMah As Integer = S
-                                   Dim SelItem As KeyValuePair(Of String, String) = CLB_Risultati.CheckedItems(S)
+                                   'Dim SelItem As KeyValuePair(Of String, String) = Nothing ' CLB_Risultati.CheckedItems(S)
+                                   Dim SelItem As ListViewItem = Lsv_Risultati.InvocaFunzioneSicuro(Function() Lsv_Risultati.CheckedItems(CreaUnaVariabileLocaleMah))
 
                                    Lbl_Album.InvocaMetodoSicuro(Sub() Lbl_Album.Text =
-                                                                    String.Format("[{0} / {1}] {2}", CreaUnaVariabileLocaleMah + 1, CLB_Risultati.CheckedItems.Count, SelItem.Value))
+                                                                    String.Format("[{0} / {1}] {2}", CreaUnaVariabileLocaleMah + 1, Lsv_Risultati.CheckedItems.Count, SelItem.Text))
 
-                                   Dim HTMLPagina As String = OttieniHTML(SitoBase & SelItem.Key)
+                                   Dim HTMLPagina As String = OttieniHTML(SitoBase & SelItem.SubItems(1).Text)
 
                                    If String.IsNullOrWhiteSpace(HTMLPagina) Then
                                        MessageBox.Show("Impossibile ottenere le informazioni", "Attenzione", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -238,28 +254,6 @@ Public Class Principale
                        End Sub)
     End Function
 
-    Private Function OttieniHTML(Query As String) As String
-        Try
-            Dim UriSito As Uri = Nothing
-            Dim TheHTML As String = String.Empty
-            Uri.TryCreate(Query, UriKind.RelativeOrAbsolute, UriSito)
-
-            Using WC As New WebClientWithTimeout
-                WC.Headers.Add(Net.HttpRequestHeader.UserAgent, "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36")
-                WC.Encoding = System.Text.Encoding.UTF8
-                WC.CachePolicy = New System.Net.Cache.RequestCachePolicy(System.Net.Cache.RequestCacheLevel.NoCacheNoStore)
-                WC.Timeout = 30000
-                WC.KeepAlive = True
-                TheHTML = WC.DownloadStringTaskAsync(UriSito).Result
-            End Using
-
-            Return TheHTML
-        Catch ex As Exception
-            Return Nothing
-        End Try
-    End Function
-
-
 #Region " Downloader "
 
     Dim TCS As TaskCompletionSource(Of Boolean)
@@ -267,7 +261,7 @@ Public Class Principale
     Private Sub Cliente_DownloadProgressChanged(ByVal sender As Object, ByVal e As DownloadProgressChangedEventArgs)
         Try
             Pb_Download.InvocaMetodoSicuro(Sub() Pb_Download.Value = e.ProgressPercentage)
-            Lbl_Download.InvocaMetodoSicuro(Sub() Lbl_Download.Text = String.Format("Download in corso ... {0} / {1}", e.BytesReceived.ToSize(2), e.TotalBytesToReceive.ToSize(2)))
+            Lbl_Download.InvocaMetodoSicuro(Sub() Lbl_Download.Text = String.Format("Download in corso... {0} / {1}", e.BytesReceived.ToSize(2), e.TotalBytesToReceive.ToSize(2)))
         Catch
         End Try
     End Sub

@@ -117,8 +117,63 @@ Module Funzioni
         Return isValid
     End Function
 
-    Friend Class Songz
+    Friend Function OttieniHTML(Query As String) As String
+        Try
+            Dim UriSito As Uri = Nothing
+            Dim TheHTML As String = String.Empty
+            Uri.TryCreate(Query, UriKind.RelativeOrAbsolute, UriSito)
 
+            Using WC As New WebClientWithTimeout
+                WC.Headers.Add(Net.HttpRequestHeader.UserAgent, "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36")
+                WC.Encoding = System.Text.Encoding.UTF8
+                WC.CachePolicy = New System.Net.Cache.RequestCachePolicy(System.Net.Cache.RequestCacheLevel.NoCacheNoStore)
+                WC.Timeout = 30000
+                WC.KeepAlive = True
+                TheHTML = WC.DownloadStringTaskAsync(UriSito).Result
+            End Using
+
+            Return TheHTML
+        Catch ex As Exception
+            Return Nothing
+        End Try
+    End Function
+
+    Friend Function OttieniImmagine(Query As String) As Image
+        Try
+            Dim ImageInBytes() As Byte = Nothing
+            Dim UriSito As Uri = Nothing
+            Uri.TryCreate(Query, UriKind.RelativeOrAbsolute, UriSito)
+
+            Using WC As New WebClientWithTimeout
+                WC.Headers.Add(Net.HttpRequestHeader.UserAgent, "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36")
+                WC.Encoding = System.Text.Encoding.UTF8
+                WC.CachePolicy = New System.Net.Cache.RequestCachePolicy(System.Net.Cache.RequestCacheLevel.NoCacheNoStore)
+                WC.Timeout = 10000
+                WC.KeepAlive = True
+                ImageInBytes = WC.DownloadDataTaskAsync(UriSito).Result
+            End Using
+
+            Dim ImageStream As New IO.MemoryStream(ImageInBytes)
+
+            Return New Drawing.Bitmap(ImageStream)
+        Catch ex As Exception
+            Return My.Resources.mixxx_icon
+        End Try
+    End Function
+
+    Friend Class Album
+        Friend Property Immagine As Image = My.Resources.mixxx_icon
+        Friend Property Nome As String = String.Empty
+        Friend Property Link As String = String.Empty
+
+        Sub New(Immagine As Image, Nome As String, Link As String)
+            Me.Immagine = Immagine
+            Me.Nome = Nome
+            Me.Link = Link
+        End Sub
+    End Class
+
+    Friend Class Song
         Friend Property Nome As String = String.Empty
         Friend Property Link As String = String.Empty
 
@@ -127,4 +182,5 @@ Module Funzioni
             Me.Link = Link
         End Sub
     End Class
+
 End Module

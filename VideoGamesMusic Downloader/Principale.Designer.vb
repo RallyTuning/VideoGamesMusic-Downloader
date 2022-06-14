@@ -25,7 +25,6 @@ Partial Class Principale
         Me.Label1 = New System.Windows.Forms.Label()
         Me.Txt_Cerca = New System.Windows.Forms.TextBox()
         Me.Btn_Cerca = New System.Windows.Forms.Button()
-        Me.CLB_Risultati = New System.Windows.Forms.CheckedListBox()
         Me.Lbl_Risultati = New System.Windows.Forms.Label()
         Me.Chk_Seleziona = New System.Windows.Forms.CheckBox()
         Me.Txt_SalvaIn = New System.Windows.Forms.TextBox()
@@ -38,6 +37,13 @@ Partial Class Principale
         Me.Lbl_Album = New System.Windows.Forms.Label()
         Me.Pb_Album = New System.Windows.Forms.ProgressBar()
         Me.Lnk_Info = New System.Windows.Forms.LinkLabel()
+        Me.PictureBox3 = New System.Windows.Forms.PictureBox()
+        Me.PictureBox2 = New System.Windows.Forms.PictureBox()
+        Me.PictureBox1 = New System.Windows.Forms.PictureBox()
+        Me.Lsv_Risultati = New System.Windows.Forms.ListView()
+        CType(Me.PictureBox3, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'Label1
@@ -66,14 +72,6 @@ Partial Class Principale
         Me.Btn_Cerca.TabIndex = 2
         Me.Btn_Cerca.Text = "&Cerca"
         Me.Btn_Cerca.UseVisualStyleBackColor = True
-        '
-        'CLB_Risultati
-        '
-        Me.CLB_Risultati.FormattingEnabled = True
-        Me.CLB_Risultati.Location = New System.Drawing.Point(12, 91)
-        Me.CLB_Risultati.Name = "CLB_Risultati"
-        Me.CLB_Risultati.Size = New System.Drawing.Size(510, 292)
-        Me.CLB_Risultati.TabIndex = 3
         '
         'Lbl_Risultati
         '
@@ -114,37 +112,37 @@ Partial Class Principale
         '
         'Pb_Download
         '
-        Me.Pb_Download.Location = New System.Drawing.Point(12, 504)
+        Me.Pb_Download.Location = New System.Drawing.Point(50, 513)
         Me.Pb_Download.Name = "Pb_Download"
-        Me.Pb_Download.Size = New System.Drawing.Size(510, 23)
+        Me.Pb_Download.Size = New System.Drawing.Size(472, 10)
         Me.Pb_Download.TabIndex = 5
         '
         'Pb_Canzone
         '
-        Me.Pb_Canzone.Location = New System.Drawing.Point(12, 548)
+        Me.Pb_Canzone.Location = New System.Drawing.Point(50, 546)
         Me.Pb_Canzone.Name = "Pb_Canzone"
-        Me.Pb_Canzone.Size = New System.Drawing.Size(510, 15)
+        Me.Pb_Canzone.Size = New System.Drawing.Size(472, 15)
         Me.Pb_Canzone.TabIndex = 5
         '
         'Lbl_Download
         '
         Me.Lbl_Download.AutoSize = True
-        Me.Lbl_Download.Location = New System.Drawing.Point(13, 486)
+        Me.Lbl_Download.Location = New System.Drawing.Point(51, 495)
         Me.Lbl_Download.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Lbl_Download.Name = "Lbl_Download"
-        Me.Lbl_Download.Size = New System.Drawing.Size(147, 15)
+        Me.Lbl_Download.Size = New System.Drawing.Size(92, 15)
         Me.Lbl_Download.TabIndex = 0
-        Me.Lbl_Download.Text = "Download in corso ... 0 / 0"
+        Me.Lbl_Download.Text = "Stato download"
         '
         'Lbl_Canzone
         '
         Me.Lbl_Canzone.AutoSize = True
-        Me.Lbl_Canzone.Location = New System.Drawing.Point(13, 530)
+        Me.Lbl_Canzone.Location = New System.Drawing.Point(51, 528)
         Me.Lbl_Canzone.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Lbl_Canzone.Name = "Lbl_Canzone"
-        Me.Lbl_Canzone.Size = New System.Drawing.Size(123, 15)
+        Me.Lbl_Canzone.Size = New System.Drawing.Size(119, 15)
         Me.Lbl_Canzone.TabIndex = 0
-        Me.Lbl_Canzone.Text = "[0 / 0] Nome canzone"
+        Me.Lbl_Canzone.Text = "Avanzamento album"
         '
         'Btn_Scarica
         '
@@ -160,18 +158,18 @@ Partial Class Principale
         'Lbl_Album
         '
         Me.Lbl_Album.AutoSize = True
-        Me.Lbl_Album.Location = New System.Drawing.Point(13, 566)
+        Me.Lbl_Album.Location = New System.Drawing.Point(51, 567)
         Me.Lbl_Album.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Lbl_Album.Name = "Lbl_Album"
-        Me.Lbl_Album.Size = New System.Drawing.Size(111, 15)
+        Me.Lbl_Album.Size = New System.Drawing.Size(114, 15)
         Me.Lbl_Album.TabIndex = 0
-        Me.Lbl_Album.Text = "[0 / 0] Nome album"
+        Me.Lbl_Album.Text = "Avanzamento totale"
         '
         'Pb_Album
         '
-        Me.Pb_Album.Location = New System.Drawing.Point(12, 584)
+        Me.Pb_Album.Location = New System.Drawing.Point(50, 584)
         Me.Pb_Album.Name = "Pb_Album"
-        Me.Pb_Album.Size = New System.Drawing.Size(510, 15)
+        Me.Pb_Album.Size = New System.Drawing.Size(472, 15)
         Me.Pb_Album.TabIndex = 5
         '
         'Lnk_Info
@@ -184,18 +182,58 @@ Partial Class Principale
         Me.Lnk_Info.TabStop = True
         Me.Lnk_Info.Text = "(?) Info"
         '
+        'PictureBox3
+        '
+        Me.PictureBox3.Image = Global.VideoGamesMusic_Downloader.My.Resources.Resources.downloader_arrow_icon
+        Me.PictureBox3.Location = New System.Drawing.Point(12, 491)
+        Me.PictureBox3.Name = "PictureBox3"
+        Me.PictureBox3.Size = New System.Drawing.Size(32, 32)
+        Me.PictureBox3.TabIndex = 8
+        Me.PictureBox3.TabStop = False
+        '
+        'PictureBox2
+        '
+        Me.PictureBox2.Image = Global.VideoGamesMusic_Downloader.My.Resources.Resources.musique_icon
+        Me.PictureBox2.Location = New System.Drawing.Point(12, 529)
+        Me.PictureBox2.Name = "PictureBox2"
+        Me.PictureBox2.Size = New System.Drawing.Size(32, 32)
+        Me.PictureBox2.TabIndex = 8
+        Me.PictureBox2.TabStop = False
+        '
+        'PictureBox1
+        '
+        Me.PictureBox1.Image = Global.VideoGamesMusic_Downloader.My.Resources.Resources.mixxx_icon
+        Me.PictureBox1.Location = New System.Drawing.Point(12, 567)
+        Me.PictureBox1.Name = "PictureBox1"
+        Me.PictureBox1.Size = New System.Drawing.Size(32, 32)
+        Me.PictureBox1.TabIndex = 8
+        Me.PictureBox1.TabStop = False
+        '
+        'Lsv_Risultati
+        '
+        Me.Lsv_Risultati.CheckBoxes = True
+        Me.Lsv_Risultati.HideSelection = False
+        Me.Lsv_Risultati.Location = New System.Drawing.Point(12, 91)
+        Me.Lsv_Risultati.Name = "Lsv_Risultati"
+        Me.Lsv_Risultati.Size = New System.Drawing.Size(510, 292)
+        Me.Lsv_Risultati.TabIndex = 9
+        Me.Lsv_Risultati.UseCompatibleStateImageBehavior = False
+        '
         'Principale
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 15.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(534, 611)
+        Me.Controls.Add(Me.Lsv_Risultati)
+        Me.Controls.Add(Me.PictureBox3)
+        Me.Controls.Add(Me.PictureBox2)
+        Me.Controls.Add(Me.PictureBox1)
         Me.Controls.Add(Me.Lnk_Info)
         Me.Controls.Add(Me.Btn_Scarica)
         Me.Controls.Add(Me.Pb_Album)
         Me.Controls.Add(Me.Pb_Canzone)
         Me.Controls.Add(Me.Pb_Download)
         Me.Controls.Add(Me.Chk_Seleziona)
-        Me.Controls.Add(Me.CLB_Risultati)
         Me.Controls.Add(Me.Btn_SalvaIn)
         Me.Controls.Add(Me.Btn_Cerca)
         Me.Controls.Add(Me.Txt_SalvaIn)
@@ -213,6 +251,9 @@ Partial Class Principale
         Me.Name = "Principale"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "VideoGameMusic Downloader"
+        CType(Me.PictureBox3, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -221,7 +262,6 @@ Partial Class Principale
     Friend WithEvents Label1 As Label
     Friend WithEvents Txt_Cerca As TextBox
     Friend WithEvents Btn_Cerca As Button
-    Friend WithEvents CLB_Risultati As CheckedListBox
     Friend WithEvents Lbl_Risultati As Label
     Friend WithEvents Chk_Seleziona As CheckBox
     Friend WithEvents Txt_SalvaIn As TextBox
@@ -234,4 +274,8 @@ Partial Class Principale
     Friend WithEvents Lbl_Album As Label
     Friend WithEvents Pb_Album As ProgressBar
     Friend WithEvents Lnk_Info As LinkLabel
+    Friend WithEvents PictureBox1 As PictureBox
+    Friend WithEvents PictureBox2 As PictureBox
+    Friend WithEvents PictureBox3 As PictureBox
+    Friend WithEvents Lsv_Risultati As ListView
 End Class
