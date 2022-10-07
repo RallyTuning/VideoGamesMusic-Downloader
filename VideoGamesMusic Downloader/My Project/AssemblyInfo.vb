@@ -9,7 +9,7 @@ Imports System.Runtime.InteropServices
 ' Controllare i valori degli attributi degli assembly
 
 <Assembly: AssemblyTitle("VideoGamesMusic Downloader")>
-<Assembly: AssemblyDescription("Scarica soundtrack da https://downloads.khinsider.com")>
+<Assembly: AssemblyDescription("Download soundtracks from https://downloads.khinsider.com")>
 <Assembly: AssemblyCompany("Disactive Softworks")>
 <Assembly: AssemblyProduct("VideoGamesMusic Downloader")>
 <Assembly: AssemblyCopyright("Copyright © Gianluigi Capozzoli 2022")>
@@ -31,5 +31,5 @@ Imports System.Runtime.InteropServices
 ' usando l'asterisco '*' come illustrato di seguito:
 ' <Assembly: AssemblyVersion("1.0.*")>
 
-<Assembly: AssemblyVersion("1.0.0.0")>
-<Assembly: AssemblyFileVersion("1.0.0.0")>
+<Assembly: AssemblyVersion("1.2022.10.07")>
+<Assembly: AssemblyFileVersion("1.2022.10.07")>

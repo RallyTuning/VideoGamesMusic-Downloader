@@ -2,6 +2,7 @@
 Imports System.Linq.Expressions
 Imports System.Net
 Imports System.Runtime.CompilerServices
+Imports System.Text.RegularExpressions
 
 Module Funzioni
 
@@ -9,42 +10,48 @@ Module Funzioni
 
 #Region " Thread "
 
-    Private Delegate Sub InvokeThreadSafeMethodDelegate(ByVal control As Control, ByVal method As Expression(Of Action))
-    Private Delegate Function InvokeThreadSafeFunctionDelegate(Of T)(ByVal control As Control, ByVal [function] As Expression(Of Func(Of T))) As T
+    Private Delegate Sub InvokeThreadSafeMethodDelegate(ByVal Cnt As Control, ByVal Mtd As Expression(Of Action))
+    Private Delegate Function InvokeThreadSafeFunctionDelegate(Of T)(ByVal Cnt As Control, ByVal Fnc As Expression(Of Func(Of T))) As T
 
     <Extension()>
-    Public Sub InvocaMetodoSicuro(ByVal control As Control, ByVal method As Expression(Of Action))
-        If (control.InvokeRequired) Then
+    Public Sub InvocaMetodoSicuro(ByVal Cnt As Control, ByVal Mtd As Expression(Of Action))
+        If (Cnt.InvokeRequired) Then
             Dim del = New InvokeThreadSafeMethodDelegate(AddressOf InvocaMetodoSicuro)
-            control.Invoke(del, control, method)
+            Cnt.Invoke(del, Cnt, Mtd)
         Else
-            method.Compile().DynamicInvoke()
+            Mtd.Compile().DynamicInvoke()
         End If
     End Sub
 
     <Extension()>
-    Public Function InvocaFunzioneSicuro(Of T)(ByVal control As Control, ByVal [function] As Expression(Of Func(Of T))) As T
-        If (control.InvokeRequired) Then
+    Public Function InvocaFunzioneSicuro(Of T)(ByVal Cnt As Control, ByVal Fnc As Expression(Of Func(Of T))) As T
+        If (Cnt.InvokeRequired) Then
             Dim del = New InvokeThreadSafeFunctionDelegate(Of T)(AddressOf InvocaFunzioneSicuro)
-            Return DirectCast(control.Invoke(del, control, [function]), T)
+            Return DirectCast(Cnt.Invoke(del, Cnt, Fnc), T)
         Else
-            Return DirectCast([function].Compile().DynamicInvoke(), T)
+            Return DirectCast(Fnc.Compile().DynamicInvoke(), T)
         End If
     End Function
 
 #End Region
 
     ''' <summary>
-    ''' Abilita il Double Buffer sui controlli che non lo prevedono.
+    ''' Enable the Double Buffer on any control that support it.
     ''' </summary>
-    ''' <param name="Controllo">Controllo sul quale abilitare il Double Buffer.</param>
-    ''' <param name="Abilita">True abilita, False disabilita.</param>
+    ''' <param name="Controllo">The control</param>
+    ''' <param name="Abilita">Enable or disable</param>
     <Extension()>
     Sub DoubleBuffering(ByVal Controllo As System.Windows.Forms.Control, ByVal Abilita As Boolean)
         Dim DoubleBufferPropertyInfo = Controllo.[GetType]().GetProperty("DoubleBuffered", System.Reflection.BindingFlags.Instance Or System.Reflection.BindingFlags.NonPublic)
         DoubleBufferPropertyInfo.SetValue(Controllo, Abilita, Nothing)
     End Sub
 
+    ''' <summary>
+    ''' Convert bytes in human readable strings
+    ''' </summary>
+    ''' <param name="Valore">Bytes to convert</param>
+    ''' <param name="Decimali">Number of decimals</param>
+    ''' <returns>Human readable strings</returns>
     <Extension()>
     Friend Function ToSize(ByVal Valore As Long, ByVal Optional Decimali As Integer = 0) As String
         Try
@@ -58,65 +65,49 @@ Module Funzioni
         End Try
     End Function
 
-    Friend Class WebClientWithTimeout
-        Inherits WebClient
+    ''' <summary>
+    ''' Remove or replace any illegal char from a file name and or path
+    ''' </summary>
+    ''' <param name="StrInput">Input string</param>
+    ''' <param name="Replacement">Char to replace with</param>
+    ''' <returns>A legal string</returns>
+    <Extension()>
+    Friend Function RimuoviIllegal(StrInput As String, Optional Replacement As String = "") As String
+        Dim RegexSearch As String = New String(Path.GetInvalidFileNameChars()) & New String(Path.GetInvalidPathChars())
+        Dim RRR As New Regex(String.Format("[{0}]", Regex.Escape(RegexSearch)))
+        Return RRR.Replace(StrInput, Replacement)
+    End Function
 
-        Friend Property Timeout As Integer = 60000
-        Friend Property KeepAlive As Boolean = True
-
-        'for sync requests
-        Protected Overrides Function GetWebRequest(ByVal TheURI As Uri) As WebRequest
-            Dim W = MyBase.GetWebRequest(TheURI)
-            W.Timeout = Me.Timeout
-
-            If TypeOf W Is HttpWebRequest Then
-                CType(W, HttpWebRequest).KeepAlive = Me.KeepAlive
-            End If
-
-            Return W
-        End Function
-
-        'the above does not work for async requests, lets override the method
-        Friend Overloads Async Function DownloadStringTaskAsync(ByVal Address As Uri) As Task(Of String)
-            Return Await RunWithTimeout(MyBase.DownloadStringTaskAsync(Address))
-        End Function
-
-        Friend Overloads Async Function UploadStringTaskAsync(ByVal Address As String, ByVal TheData As String) As Task(Of String)
-            Return Await RunWithTimeout(MyBase.UploadStringTaskAsync(Address, TheData))
-        End Function
-
-        Private Async Function RunWithTimeout(Of T)(ByVal Tasko As Task(Of T)) As Task(Of T)
-            If Tasko Is Await Task.WhenAny(Tasko, Task.Delay(Timeout)) Then
-                Return Await Tasko
-            Else
-                Me.CancelAsync()
-                Me.Dispose()
-                Throw New TimeoutException("Timeout")
-            End If
-        End Function
-
-    End Class
-
-    Friend Function IsValidPath(ByVal ThePath As String, ByVal Optional allowRelativePaths As Boolean = False) As Boolean
-        Dim isValid As Boolean
+    ''' <summary>
+    ''' Check if a path is valid
+    ''' </summary>
+    ''' <param name="ThePath">Path to check</param>
+    ''' <param name="AllowRelativePaths">Allow relative paths</param>
+    ''' <returns>True if valid, false if not</returns>
+    Friend Function IsValidPath(ByVal ThePath As String, ByVal Optional AllowRelativePaths As Boolean = False) As Boolean
+        Dim IsValid As Boolean
 
         Try
-            Dim fullPath As String = Path.GetFullPath(ThePath)
+            Dim FullPath As String = Path.GetFullPath(ThePath)
 
-            If allowRelativePaths Then
-                isValid = Path.IsPathRooted(ThePath)
+            If AllowRelativePaths Then
+                IsValid = Path.IsPathRooted(ThePath)
             Else
-                Dim root As String = Path.GetPathRoot(ThePath)
-                isValid = String.IsNullOrEmpty(root.Trim(New Char() {"\"c, "/"c})) = False
+                Dim Roota As String = Path.GetPathRoot(ThePath)
+                IsValid = String.IsNullOrEmpty(Roota.Trim(New Char() {"\"c, "/"c})) = False
             End If
-
-        Catch ex As Exception
+        Catch
             isValid = False
         End Try
 
         Return isValid
     End Function
 
+    ''' <summary>
+    ''' Get the HTML of a webpage
+    ''' </summary>
+    ''' <param name="Query">URL to get</param>
+    ''' <returns>HTML in string</returns>
     Friend Function OttieniHTML(Query As String) As String
         Try
             Dim UriSito As Uri = Nothing
@@ -138,8 +129,15 @@ Module Funzioni
         End Try
     End Function
 
+    ''' <summary>
+    ''' Get a image from URL
+    ''' </summary>
+    ''' <param name="Query">URL to get</param>
+    ''' <returns>The image as Image</returns>
     Friend Function OttieniImmagine(Query As String) As Image
         Try
+            If String.IsNullOrWhiteSpace(Query) Then Return My.Resources.mixxx_icon
+
             Dim ImageInBytes() As Byte = Nothing
             Dim UriSito As Uri = Nothing
             Uri.TryCreate(Query, UriKind.RelativeOrAbsolute, UriSito)
@@ -161,18 +159,51 @@ Module Funzioni
         End Try
     End Function
 
-    Friend Class Album
-        Friend Property Immagine As Image = My.Resources.mixxx_icon
-        Friend Property Nome As String = String.Empty
-        Friend Property Link As String = String.Empty
+    ''' <summary>
+    ''' A classic WebClient but with timeout working in Async
+    ''' </summary>
+    Friend Class WebClientWithTimeout
+        Inherits WebClient
 
-        Sub New(Immagine As Image, Nome As String, Link As String)
-            Me.Immagine = Immagine
-            Me.Nome = Nome
-            Me.Link = Link
-        End Sub
+        Friend Property Timeout As Integer = 60000
+        Friend Property KeepAlive As Boolean = True
+
+        'For sync requests
+        Protected Overrides Function GetWebRequest(ByVal TheURI As Uri) As WebRequest
+            Dim W = MyBase.GetWebRequest(TheURI)
+            W.Timeout = Me.Timeout
+
+            If TypeOf W Is HttpWebRequest Then
+                CType(W, HttpWebRequest).KeepAlive = Me.KeepAlive
+            End If
+
+            Return W
+        End Function
+
+        'The above does not work for async requests, lets override the method
+        Friend Overloads Async Function DownloadStringTaskAsync(ByVal Address As Uri) As Task(Of String)
+            Return Await RunWithTimeout(MyBase.DownloadStringTaskAsync(Address))
+        End Function
+
+        Friend Overloads Async Function UploadStringTaskAsync(ByVal Address As String, ByVal TheData As String) As Task(Of String)
+            Return Await RunWithTimeout(MyBase.UploadStringTaskAsync(Address, TheData))
+        End Function
+
+        Private Async Function RunWithTimeout(Of T)(ByVal Tasko As Task(Of T)) As Task(Of T)
+            If Tasko Is Await Task.WhenAny(Tasko, Task.Delay(Timeout)) Then
+                Return Await Tasko
+            Else
+                Me.CancelAsync()
+                Me.Dispose()
+                Throw New TimeoutException("Timeout")
+            End If
+        End Function
+
     End Class
 
+    ''' <summary>
+    ''' Song class
+    ''' </summary>
     Friend Class Song
         Friend Property Nome As String = String.Empty
         Friend Property Link As String = String.Empty

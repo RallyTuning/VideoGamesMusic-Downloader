@@ -22,6 +22,7 @@ Partial Class Principale
     'Non modificarla mediante l'editor del codice.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Principale))
         Me.Label1 = New System.Windows.Forms.Label()
         Me.Txt_Cerca = New System.Windows.Forms.TextBox()
         Me.Btn_Cerca = New System.Windows.Forms.Button()
@@ -52,9 +53,9 @@ Partial Class Principale
         Me.Label1.Location = New System.Drawing.Point(13, 9)
         Me.Label1.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(152, 15)
+        Me.Label1.Size = New System.Drawing.Size(138, 15)
         Me.Label1.TabIndex = 0
-        Me.Label1.Text = "Parola/e chiave da cercare"
+        Me.Label1.Text = "Keyword(s) to search for"
         '
         'Txt_Cerca
         '
@@ -62,15 +63,15 @@ Partial Class Principale
         Me.Txt_Cerca.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
         Me.Txt_Cerca.Name = "Txt_Cerca"
         Me.Txt_Cerca.Size = New System.Drawing.Size(427, 21)
-        Me.Txt_Cerca.TabIndex = 1
+        Me.Txt_Cerca.TabIndex = 0
         '
         'Btn_Cerca
         '
         Me.Btn_Cerca.Location = New System.Drawing.Point(447, 26)
         Me.Btn_Cerca.Name = "Btn_Cerca"
         Me.Btn_Cerca.Size = New System.Drawing.Size(75, 23)
-        Me.Btn_Cerca.TabIndex = 2
-        Me.Btn_Cerca.Text = "&Cerca"
+        Me.Btn_Cerca.TabIndex = 1
+        Me.Btn_Cerca.Text = "S&earch"
         Me.Btn_Cerca.UseVisualStyleBackColor = True
         '
         'Lbl_Risultati
@@ -80,7 +81,7 @@ Partial Class Principale
         Me.Lbl_Risultati.Name = "Lbl_Risultati"
         Me.Lbl_Risultati.Size = New System.Drawing.Size(205, 15)
         Me.Lbl_Risultati.TabIndex = 0
-        Me.Lbl_Risultati.Text = "Risultati ricerca"
+        Me.Lbl_Risultati.Text = "Results"
         Me.Lbl_Risultati.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'Chk_Seleziona
@@ -88,9 +89,9 @@ Partial Class Principale
         Me.Chk_Seleziona.AutoSize = True
         Me.Chk_Seleziona.Location = New System.Drawing.Point(15, 69)
         Me.Chk_Seleziona.Name = "Chk_Seleziona"
-        Me.Chk_Seleziona.Size = New System.Drawing.Size(173, 19)
-        Me.Chk_Seleziona.TabIndex = 4
-        Me.Chk_Seleziona.Text = "Seleziona/deseleziona tutti"
+        Me.Chk_Seleziona.Size = New System.Drawing.Size(125, 19)
+        Me.Chk_Seleziona.TabIndex = 2
+        Me.Chk_Seleziona.Text = "Check/uncheck all"
         Me.Chk_Seleziona.UseVisualStyleBackColor = True
         '
         'Txt_SalvaIn
@@ -99,15 +100,15 @@ Partial Class Principale
         Me.Txt_SalvaIn.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
         Me.Txt_SalvaIn.Name = "Txt_SalvaIn"
         Me.Txt_SalvaIn.Size = New System.Drawing.Size(427, 21)
-        Me.Txt_SalvaIn.TabIndex = 1
+        Me.Txt_SalvaIn.TabIndex = 4
         '
         'Btn_SalvaIn
         '
         Me.Btn_SalvaIn.Location = New System.Drawing.Point(447, 403)
         Me.Btn_SalvaIn.Name = "Btn_SalvaIn"
         Me.Btn_SalvaIn.Size = New System.Drawing.Size(75, 23)
-        Me.Btn_SalvaIn.TabIndex = 2
-        Me.Btn_SalvaIn.Text = "&Salva in..."
+        Me.Btn_SalvaIn.TabIndex = 5
+        Me.Btn_SalvaIn.Text = "&Save to..."
         Me.Btn_SalvaIn.UseVisualStyleBackColor = True
         '
         'Pb_Download
@@ -130,9 +131,9 @@ Partial Class Principale
         Me.Lbl_Download.Location = New System.Drawing.Point(51, 495)
         Me.Lbl_Download.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Lbl_Download.Name = "Lbl_Download"
-        Me.Lbl_Download.Size = New System.Drawing.Size(92, 15)
+        Me.Lbl_Download.Size = New System.Drawing.Size(36, 15)
         Me.Lbl_Download.TabIndex = 0
-        Me.Lbl_Download.Text = "Stato download"
+        Me.Lbl_Download.Text = "Song"
         '
         'Lbl_Canzone
         '
@@ -140,9 +141,9 @@ Partial Class Principale
         Me.Lbl_Canzone.Location = New System.Drawing.Point(51, 528)
         Me.Lbl_Canzone.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Lbl_Canzone.Name = "Lbl_Canzone"
-        Me.Lbl_Canzone.Size = New System.Drawing.Size(119, 15)
+        Me.Lbl_Canzone.Size = New System.Drawing.Size(42, 15)
         Me.Lbl_Canzone.TabIndex = 0
-        Me.Lbl_Canzone.Text = "Avanzamento album"
+        Me.Lbl_Canzone.Text = "Album"
         '
         'Btn_Scarica
         '
@@ -152,7 +153,7 @@ Partial Class Principale
         Me.Btn_Scarica.Name = "Btn_Scarica"
         Me.Btn_Scarica.Size = New System.Drawing.Size(510, 23)
         Me.Btn_Scarica.TabIndex = 6
-        Me.Btn_Scarica.Text = "Scarica &Tutto!"
+        Me.Btn_Scarica.Text = "&Download!"
         Me.Btn_Scarica.UseVisualStyleBackColor = True
         '
         'Lbl_Album
@@ -161,9 +162,9 @@ Partial Class Principale
         Me.Lbl_Album.Location = New System.Drawing.Point(51, 567)
         Me.Lbl_Album.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Lbl_Album.Name = "Lbl_Album"
-        Me.Lbl_Album.Size = New System.Drawing.Size(114, 15)
+        Me.Lbl_Album.Size = New System.Drawing.Size(34, 15)
         Me.Lbl_Album.TabIndex = 0
-        Me.Lbl_Album.Text = "Avanzamento totale"
+        Me.Lbl_Album.Text = "Total"
         '
         'Pb_Album
         '
@@ -202,10 +203,11 @@ Partial Class Principale
         '
         'PictureBox1
         '
-        Me.PictureBox1.Image = Global.VideoGamesMusic_Downloader.My.Resources.Resources.mixxx_icon
+        Me.PictureBox1.Image = CType(resources.GetObject("PictureBox1.Image"), System.Drawing.Image)
         Me.PictureBox1.Location = New System.Drawing.Point(12, 567)
         Me.PictureBox1.Name = "PictureBox1"
         Me.PictureBox1.Size = New System.Drawing.Size(32, 32)
+        Me.PictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
         Me.PictureBox1.TabIndex = 8
         Me.PictureBox1.TabStop = False
         '
@@ -216,7 +218,7 @@ Partial Class Principale
         Me.Lsv_Risultati.Location = New System.Drawing.Point(12, 91)
         Me.Lsv_Risultati.Name = "Lsv_Risultati"
         Me.Lsv_Risultati.Size = New System.Drawing.Size(510, 292)
-        Me.Lsv_Risultati.TabIndex = 9
+        Me.Lsv_Risultati.TabIndex = 3
         Me.Lsv_Risultati.UseCompatibleStateImageBehavior = False
         '
         'Principale

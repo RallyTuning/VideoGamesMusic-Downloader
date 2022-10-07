@@ -89,5 +89,15 @@ Namespace My.Resources
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property
+        
+        '''<summary>
+        '''  Cerca una risorsa localizzata di tipo System.Drawing.Icon simile a (Icona).
+        '''</summary>
+        Friend ReadOnly Property Papirus_Team_Papirus_Apps_Mixxx() As System.Drawing.Icon
+            Get
+                Dim obj As Object = ResourceManager.GetObject("Papirus_Team_Papirus_Apps_Mixxx", resourceCulture)
+                Return CType(obj,System.Drawing.Icon)
+            End Get
+        End Property
     End Module
 End Namespace

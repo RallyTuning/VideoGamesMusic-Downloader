@@ -47,6 +47,9 @@
   <PropertyGroup>
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Assets\Papirus-Team-Papirus-Apps-Mixxx.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -121,8 +124,12 @@
     </None>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Assets\" />
+    <Content Include="Assets\downloader-arrow-icon.png" />
+    <Content Include="Assets\mixxx-icon.png" />
+    <Content Include="Assets\musique-icon.png" />
+    <Content Include="Assets\Papirus-Team-Papirus-Apps-Mixxx.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
 </Project>
