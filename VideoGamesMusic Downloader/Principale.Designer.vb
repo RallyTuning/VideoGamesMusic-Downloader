@@ -22,6 +22,7 @@ Partial Class Principale
     'Non modificarla mediante l'editor del codice.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Principale))
         Me.Label1 = New System.Windows.Forms.Label()
         Me.Txt_Cerca = New System.Windows.Forms.TextBox()
@@ -42,6 +43,7 @@ Partial Class Principale
         Me.PictureBox2 = New System.Windows.Forms.PictureBox()
         Me.PictureBox1 = New System.Windows.Forms.PictureBox()
         Me.Lsv_Risultati = New System.Windows.Forms.ListView()
+        Me.TimerVelocità = New System.Windows.Forms.Timer(Me.components)
         CType(Me.PictureBox3, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -221,6 +223,11 @@ Partial Class Principale
         Me.Lsv_Risultati.TabIndex = 3
         Me.Lsv_Risultati.UseCompatibleStateImageBehavior = False
         '
+        'TimerVelocità
+        '
+        Me.TimerVelocità.Enabled = True
+        Me.TimerVelocità.Interval = 1000
+        '
         'Principale
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 15.0!)
@@ -280,4 +287,5 @@ Partial Class Principale
     Friend WithEvents PictureBox2 As PictureBox
     Friend WithEvents PictureBox3 As PictureBox
     Friend WithEvents Lsv_Risultati As ListView
+    Friend WithEvents TimerVelocità As Timer
 End Class

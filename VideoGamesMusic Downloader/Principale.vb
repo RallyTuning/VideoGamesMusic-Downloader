@@ -4,6 +4,9 @@ Imports System.Text.RegularExpressions
 
 Public Class Principale
 
+    Dim Velocità As String
+    Private ByteIn As Long
+
 #Region " Handles "
 
     Private Sub Principale_Load(sender As Object, e As EventArgs) Handles MyBase.Load
@@ -118,7 +121,6 @@ THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 #End Region
 
 
-
 #Region " Subs "
 
     Private Sub Spengi(SpengiIcosi As Boolean)
@@ -227,8 +229,7 @@ THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                                        Dim CreaUnaVariabileLocaleMahIlRitorno As Integer = M
                                        Dim Ris As Match = SongMatches(M)
 
-                                       Lbl_Canzone.InvocaMetodoSicuro(Sub() Lbl_Canzone.Text =
-                                                                          String.Format("[{0} / {1}] {2}", CreaUnaVariabileLocaleMahIlRitorno + 1, SongMatches.Count, Ris.Groups(2).Value))
+
 
                                        Dim HTMLSong As String = OttieniHTML(SitoBase & Ris.Groups(1).Value)
 
@@ -240,20 +241,28 @@ THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                                        Dim AlbumName As String = Regex.Match(HTMLSong, "Album name.*?>([\s\S]*?)<").Groups(1).Value
                                        If String.IsNullOrWhiteSpace(AlbumName) Then AlbumName = "Unknown album"
 
-                                       Dim SongName As String = Regex.Match(HTMLSong, "Song name.*?>([\s\S]*?)<").Groups(1).Value
-                                       If String.IsNullOrWhiteSpace(SongName) Then SongName = "Unknown title"
 
-                                       Dim SongLink As String = Regex.Match(HTMLSong, "<audio.*?src=""([\s\S]*?)"".*?audio>").Groups(1).Value
+
+                                       Dim SongLinks As MatchCollection = Regex.Matches(HTMLSong, "<p>.*?href.*?""([\s\S]*?)"".*?songDownloadLink")
 
                                        'Estensione
-                                       Dim sTemp As String = SongLink.Split("."c).Last
-                                       If Not SongName.EndsWith(sTemp) Then SongName &= "." & sTemp
+                                       For Each SongMatch As Match In SongLinks
+                                           Dim SongName As String = Regex.Match(HTMLSong, "Song name.*?>([\s\S]*?)<").Groups(1).Value
+                                           If String.IsNullOrWhiteSpace(SongName) Then SongName = "Unknown title"
 
-                                       Dim ClearPath As String = SalvaIn & "\" & AlbumName.RimuoviIllegal("_")
+                                           Dim sTemp As String = SongMatch.Groups(1).Value.Split("."c).Last
+                                           If Not SongName.EndsWith(sTemp) Then SongName &= "." & sTemp
 
-                                       If Not IO.Directory.Exists(ClearPath) Then IO.Directory.CreateDirectory(ClearPath)
+                                           Lbl_Canzone.InvocaMetodoSicuro(Sub() Lbl_Canzone.Text =
+                                                                          String.Format("[{0} / {1}] {2}", CreaUnaVariabileLocaleMahIlRitorno + 1, SongMatches.Count, SongName))
 
-                                       AvviaDownload(SongLink, ClearPath & "\" & SongName.RimuoviIllegal("_")).Wait()
+                                           Dim ClearPath As String = SalvaIn & "\" & AlbumName.RimuoviIllegal("_")
+
+                                           If Not IO.Directory.Exists(ClearPath) Then IO.Directory.CreateDirectory(ClearPath)
+
+                                           AvviaDownload(SongMatch.Groups(1).Value, ClearPath & "\" & SongName.RimuoviIllegal("_")).Wait()
+                                       Next
+
 
                                        Pb_Canzone.InvocaMetodoSicuro(Sub() Pb_Canzone.Value = CreaUnaVariabileLocaleMahIlRitorno + 1)
                                    Next
@@ -275,21 +284,41 @@ THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                        End Sub)
     End Function
 
+    Private Sub TimerVelocità_Tick(sender As Object, e As EventArgs) Handles TimerVelocità.Tick
+        Try
+            If SW.IsRunning Then
+                Velocità = (ByteIn / SW.Elapsed.TotalSeconds).ToSize(2) & "/s"
+            Else
+                Velocità = ""
+            End If
+        Catch ex As Exception
+            Velocità = ""
+        End Try
+    End Sub
+
 #End Region
+
 
 #Region " Downloader "
 
     Dim TCS As TaskCompletionSource(Of Boolean)
+    ReadOnly SW As New Stopwatch
 
     Private Sub Cliente_DownloadProgressChanged(ByVal sender As Object, ByVal e As DownloadProgressChangedEventArgs)
         Try
+            ByteIn = e.BytesReceived
             Pb_Download.InvocaMetodoSicuro(Sub() Pb_Download.Value = e.ProgressPercentage)
-            Lbl_Download.InvocaMetodoSicuro(Sub() Lbl_Download.Text = String.Format("Download... {0} / {1}", e.BytesReceived.ToSize(2), e.TotalBytesToReceive.ToSize(2)))
+            Lbl_Download.InvocaMetodoSicuro(Sub() Lbl_Download.Text = String.Format("Download... {0} / {1} @ {2}",
+                                                                                    e.BytesReceived.ToSize(2),
+                                                                                    e.TotalBytesToReceive.ToSize(2),
+                                                                                    Velocità))
         Catch
         End Try
     End Sub
 
     Private Sub Cliente_DownloadFileCompleted(ByVal sender As Object, ByVal e As AsyncCompletedEventArgs)
+        SW.Reset()
+        ByteIn = 0
         TCS.SetResult(True)
         Pb_Download.InvocaMetodoSicuro(Sub() Pb_Download.Value = 0)
         Lbl_Download.InvocaMetodoSicuro(Sub() Lbl_Download.Text = "Loading...")
@@ -297,6 +326,8 @@ THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
     Private Async Function AvviaDownload(TheLink As String, TheName As String) As Task
         Try
+            SW.Start()
+
             Using Cliente As New WebClient
                 AddHandler Cliente.DownloadProgressChanged, AddressOf Cliente_DownloadProgressChanged
                 AddHandler Cliente.DownloadFileCompleted, AddressOf Cliente_DownloadFileCompleted
@@ -312,8 +343,6 @@ THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             TCS = Nothing
         End Try
     End Function
-
-
 
 #End Region
 

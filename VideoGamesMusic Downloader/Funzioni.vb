@@ -47,7 +47,7 @@ Module Funzioni
     End Sub
 
     ''' <summary>
-    ''' Convert bytes in human readable strings
+    ''' Convert bytes (long) in human readable strings
     ''' </summary>
     ''' <param name="Valore">Bytes to convert</param>
     ''' <param name="Decimali">Number of decimals</param>
@@ -55,13 +55,29 @@ Module Funzioni
     <Extension()>
     Friend Function ToSize(ByVal Valore As Long, ByVal Optional Decimali As Integer = 0) As String
         Try
-            Dim SizeSuffixes As String() = {"b", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"}
+            Return CDbl(Valore).ToSize(Decimali)
+        Catch ex As Exception
+            Return "0 Bytes"
+        End Try
+    End Function
+
+    ''' <summary>
+    ''' Convert bytes (Double) in human readable strings
+    ''' </summary>
+    ''' <param name="Valore">Bytes to convert</param>
+    ''' <param name="Decimali">Number of decimals</param>
+    ''' <returns>Human readable strings</returns>
+    <Extension()>
+    Friend Function ToSize(ByVal Valore As Double, ByVal Optional Decimali As Integer = 0) As String
+        Try
+            Dim SizeSuffixes() As String = {"Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"}
 
             Dim Mag As Integer = CInt(Math.Floor(Math.Log(Valore, 1024)))
-            Dim AdjustedSize = Math.Round(Valore / Math.Pow(1024, Mag), Decimali)
-            Return String.Format("{0} {1}", AdjustedSize, SizeSuffixes(Mag))
+            Dim AdjustedSize = Math.Round(Valore / Math.Pow(1024, Mag), Decimali, MidpointRounding.AwayFromZero)
+
+            Return String.Format("{0} {1}", AdjustedSize.ToString("N"), SizeSuffixes(Mag))
         Catch ex As Exception
-            Return "0 bytes"
+            Return "0 Bytes"
         End Try
     End Function
 
