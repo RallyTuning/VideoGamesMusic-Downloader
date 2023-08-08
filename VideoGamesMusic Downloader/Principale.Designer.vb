@@ -44,6 +44,7 @@ Partial Class Principale
         Me.PictureBox1 = New System.Windows.Forms.PictureBox()
         Me.Lsv_Risultati = New System.Windows.Forms.ListView()
         Me.TimerVelocità = New System.Windows.Forms.Timer(Me.components)
+        Me.Chk_IncludeFlac = New System.Windows.Forms.CheckBox()
         CType(Me.PictureBox3, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -101,14 +102,14 @@ Partial Class Principale
         Me.Txt_SalvaIn.Location = New System.Drawing.Point(13, 404)
         Me.Txt_SalvaIn.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
         Me.Txt_SalvaIn.Name = "Txt_SalvaIn"
-        Me.Txt_SalvaIn.Size = New System.Drawing.Size(427, 21)
+        Me.Txt_SalvaIn.Size = New System.Drawing.Size(417, 21)
         Me.Txt_SalvaIn.TabIndex = 4
         '
         'Btn_SalvaIn
         '
-        Me.Btn_SalvaIn.Location = New System.Drawing.Point(447, 403)
+        Me.Btn_SalvaIn.Location = New System.Drawing.Point(437, 403)
         Me.Btn_SalvaIn.Name = "Btn_SalvaIn"
-        Me.Btn_SalvaIn.Size = New System.Drawing.Size(75, 23)
+        Me.Btn_SalvaIn.Size = New System.Drawing.Size(85, 23)
         Me.Btn_SalvaIn.TabIndex = 5
         Me.Btn_SalvaIn.Text = "&Save to..."
         Me.Btn_SalvaIn.UseVisualStyleBackColor = True
@@ -153,7 +154,7 @@ Partial Class Principale
         Me.Btn_Scarica.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Btn_Scarica.Location = New System.Drawing.Point(12, 447)
         Me.Btn_Scarica.Name = "Btn_Scarica"
-        Me.Btn_Scarica.Size = New System.Drawing.Size(510, 23)
+        Me.Btn_Scarica.Size = New System.Drawing.Size(418, 23)
         Me.Btn_Scarica.TabIndex = 6
         Me.Btn_Scarica.Text = "&Download!"
         Me.Btn_Scarica.UseVisualStyleBackColor = True
@@ -228,11 +229,22 @@ Partial Class Principale
         Me.TimerVelocità.Enabled = True
         Me.TimerVelocità.Interval = 1000
         '
+        'Chk_IncludeFlac
+        '
+        Me.Chk_IncludeFlac.AutoSize = True
+        Me.Chk_IncludeFlac.Location = New System.Drawing.Point(437, 450)
+        Me.Chk_IncludeFlac.Name = "Chk_IncludeFlac"
+        Me.Chk_IncludeFlac.Size = New System.Drawing.Size(88, 19)
+        Me.Chk_IncludeFlac.TabIndex = 9
+        Me.Chk_IncludeFlac.Text = "Include flac"
+        Me.Chk_IncludeFlac.UseVisualStyleBackColor = True
+        '
         'Principale
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 15.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(534, 611)
+        Me.Controls.Add(Me.Chk_IncludeFlac)
         Me.Controls.Add(Me.Lsv_Risultati)
         Me.Controls.Add(Me.PictureBox3)
         Me.Controls.Add(Me.PictureBox2)
@@ -288,4 +300,5 @@ Partial Class Principale
     Friend WithEvents PictureBox3 As PictureBox
     Friend WithEvents Lsv_Risultati As ListView
     Friend WithEvents TimerVelocità As Timer
+    Friend WithEvents Chk_IncludeFlac As CheckBox
 End Class

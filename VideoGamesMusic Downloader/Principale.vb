@@ -229,8 +229,6 @@ THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                                        Dim CreaUnaVariabileLocaleMahIlRitorno As Integer = M
                                        Dim Ris As Match = SongMatches(M)
 
-
-
                                        Dim HTMLSong As String = OttieniHTML(SitoBase & Ris.Groups(1).Value)
 
                                        If String.IsNullOrWhiteSpace(HTMLSong) Then
@@ -241,8 +239,6 @@ THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                                        Dim AlbumName As String = Regex.Match(HTMLSong, "Album name.*?>([\s\S]*?)<").Groups(1).Value
                                        If String.IsNullOrWhiteSpace(AlbumName) Then AlbumName = "Unknown album"
 
-
-
                                        Dim SongLinks As MatchCollection = Regex.Matches(HTMLSong, "<p>.*?href.*?""([\s\S]*?)"".*?songDownloadLink")
 
                                        'Estensione
@@ -252,6 +248,8 @@ THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
                                            Dim sTemp As String = SongMatch.Groups(1).Value.Split("."c).Last
                                            If Not SongName.EndsWith(sTemp) Then SongName &= "." & sTemp
+
+                                           If (SongName.EndsWith(".flac") And Not Chk_IncludeFlac.Checked) Then Continue For
 
                                            Lbl_Canzone.InvocaMetodoSicuro(Sub() Lbl_Canzone.Text =
                                                                           String.Format("[{0} / {1}] {2}", CreaUnaVariabileLocaleMahIlRitorno + 1, SongMatches.Count, SongName))
