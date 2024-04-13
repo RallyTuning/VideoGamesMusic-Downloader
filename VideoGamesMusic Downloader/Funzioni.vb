@@ -176,6 +176,22 @@ Module Funzioni
     End Function
 
     ''' <summary>
+    ''' Split a file name and the extension
+    ''' </summary>
+    ''' <param name="FileName">Filename to split</param>
+    ''' <returns>Return a KeyValuePair(Of String, String) with the name of the file and the extension</returns>
+    Friend Function GetFileNameAndExtension(FileName As String) As KeyValuePair(Of String, String)
+        Try
+            Dim TempFileExt As String = FileName.Split("."c).Last
+            Dim TempFileName As String = FileName.Remove(FileName.Length - TempFileExt.Length - 1, TempFileExt.Length + 1)
+
+            Return New KeyValuePair(Of String, String)(TempFileName, TempFileExt)
+        Catch ex As Exception
+            Throw
+        End Try
+    End Function
+
+    ''' <summary>
     ''' A classic WebClient but with timeout working in Async
     ''' </summary>
     Friend Class WebClientWithTimeout
