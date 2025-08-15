@@ -219,9 +219,13 @@ THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                                        Exit Sub
                                    End If
 
+                                   Dim AlbumImages As MatchCollection = Regex.Matches(HTMLPagina, "<div.*?albumImage.*?a href.*?""([\s\S]*?)""", RegexOptions.Singleline)
+
                                    Dim Tabella As String = Regex.Matches(HTMLPagina, "table.*?songlist.*?>([\s\S]*?)<\/table>")(0).Value
 
                                    Dim SongMatches As MatchCollection = Regex.Matches(Tabella, "row""><a href=""(?<LINK>[\s\S]*?)"">(?<NOME>[\s\S]*?)<\/a>")
+
+                                   Dim ClearPath As String = SalvaIn
 
                                    Pb_Canzone.InvocaMetodoSicuro(Sub() Pb_Canzone.Maximum = SongMatches.Count)
 
@@ -240,6 +244,8 @@ THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                                        Dim AlbumName As String = Regex.Match(HTMLSong, "Album name.*?>([\s\S]*?)<").Groups(1).Value
                                        If String.IsNullOrWhiteSpace(AlbumName) Then AlbumName = "Unknown album"
 
+                                       ClearPath = SalvaIn & "\" & AlbumName.RimuoviIllegal("_")
+
                                        Dim SongLinks As MatchCollection = Regex.Matches(HTMLSong, "<p>.*?href.*?""([\s\S]*?)"".*?songDownloadLink")
 
                                        'Estensione
@@ -255,8 +261,6 @@ THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                                            Lbl_Canzone.InvocaMetodoSicuro(Sub() Lbl_Canzone.Text =
                                                                           String.Format("[{0} / {1}] {2}", CreaUnaVariabileLocaleMahIlRitorno + 1, SongMatches.Count, SongName))
 
-                                           Dim ClearPath As String = SalvaIn & "\" & AlbumName.RimuoviIllegal("_")
-
                                            If Not IO.Directory.Exists(ClearPath) Then Directory.CreateDirectory(ClearPath)
 
                                            Dim ClearSongName As String = SongName.RimuoviIllegal("_")
@@ -270,12 +274,23 @@ THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                                                AlreadyExistsCount += 1
                                            End While
 
-                                           AvviaDownload(SongMatch.Groups(1).Value, ClearPath & "\" & ClearSongName).Wait()
+                                           AvviaDownload(SongMatch.Groups(1).Value, $"{ClearPath}\{CreaUnaVariabileLocaleMahIlRitorno + 1}. {ClearSongName}").Wait()
                                        Next
 
 
                                        Pb_Canzone.InvocaMetodoSicuro(Sub() Pb_Canzone.Value = CreaUnaVariabileLocaleMahIlRitorno + 1)
                                    Next
+
+
+                                   'Download delle cover
+                                   Try
+                                       For Each Immagine As Match In AlbumImages
+                                           AvviaDownload(Immagine.Groups(1).Value, $"{ClearPath}\{Immagine.Groups(1).Value.Split("/").Last}").Wait()
+                                       Next
+                                   Catch ex As Exception
+                                       MessageBox.Show(ex.Message, "Error download images", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                                   End Try
+
 
                                    Pb_Album.InvocaMetodoSicuro(Sub() Pb_Album.Value = CreaUnaVariabileLocaleMah + 1)
                                Next
