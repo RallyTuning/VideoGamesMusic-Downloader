@@ -82,6 +82,57 @@ Module Funzioni
     End Function
 
     ''' <summary>
+    ''' Controlla se la cartella già esiste, se no cerca di dargli un nome unico
+    ''' </summary>
+    ''' <param name="Dir">Cartella da controllare</param>
+    ''' <returns>Nome cartella unica</returns>
+    Public Function UniquePath(Dir As DirectoryInfo) As String
+        Try
+            Dim baseName = Dir.Name
+            Dim parent = Dir.Parent?.FullName
+            Dim u = baseName.LastIndexOf("_"c), n As Integer
+            baseName = If(u >= 0 AndAlso Integer.TryParse(baseName.Substring(u + 1), n),
+                          baseName.Substring(0, u), baseName)
+
+            Dim cand = Dir.FullName
+            While Directory.Exists(cand)
+                n += 1
+                cand = If(String.IsNullOrEmpty(parent),
+                          $"{baseName}_{n}",
+                          IO.Path.Combine(parent, $"{baseName}_{n}"))
+            End While
+            Return cand
+        Catch ex As Exception
+            Return Dir.FullName
+        End Try
+    End Function
+
+    ''' <summary>
+    ''' Controlla se il file già esiste, se no cerca di dargli un nome unico
+    ''' </summary>
+    ''' <param name="Fil">File da controllare</param>
+    ''' <returns>Nome file unico</returns>
+    Public Function UniqueFile(Fil As FileInfo) As String
+        Try
+            Dim dir = Fil.DirectoryName
+            Dim name = IO.Path.GetFileNameWithoutExtension(Fil.Name)
+            Dim ext = Fil.Extension
+            Dim u = name.LastIndexOf("_"c), n As Integer
+            Dim baseName = If(u >= 0 AndAlso Integer.TryParse(name.Substring(u + 1), n),
+                              name.Substring(0, u), name)
+
+            Dim cand = Fil.FullName
+            While File.Exists(cand)
+                n += 1
+                cand = IO.Path.Combine(dir, $"{baseName}_{n}{ext}")
+            End While
+            Return cand
+        Catch ex As Exception
+            Return Fil.FullName
+        End Try
+    End Function
+
+    ''' <summary>
     ''' Remove or replace any illegal char from a file name and or path
     ''' </summary>
     ''' <param name="StrInput">Input string</param>

@@ -44,7 +44,7 @@ Partial Class Principale
         Me.PictureBox1 = New System.Windows.Forms.PictureBox()
         Me.Lsv_Risultati = New System.Windows.Forms.ListView()
         Me.TimerVelocità = New System.Windows.Forms.Timer(Me.components)
-        Me.Chk_IncludeFlac = New System.Windows.Forms.CheckBox()
+        Me.Chk_IncludeAll = New System.Windows.Forms.CheckBox()
         CType(Me.PictureBox3, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -56,7 +56,7 @@ Partial Class Principale
         Me.Label1.Location = New System.Drawing.Point(13, 9)
         Me.Label1.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(138, 15)
+        Me.Label1.Size = New System.Drawing.Size(206, 22)
         Me.Label1.TabIndex = 0
         Me.Label1.Text = "Keyword(s) to search for"
         '
@@ -65,7 +65,7 @@ Partial Class Principale
         Me.Txt_Cerca.Location = New System.Drawing.Point(13, 27)
         Me.Txt_Cerca.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
         Me.Txt_Cerca.Name = "Txt_Cerca"
-        Me.Txt_Cerca.Size = New System.Drawing.Size(427, 21)
+        Me.Txt_Cerca.Size = New System.Drawing.Size(427, 28)
         Me.Txt_Cerca.TabIndex = 0
         '
         'Btn_Cerca
@@ -92,7 +92,7 @@ Partial Class Principale
         Me.Chk_Seleziona.AutoSize = True
         Me.Chk_Seleziona.Location = New System.Drawing.Point(15, 69)
         Me.Chk_Seleziona.Name = "Chk_Seleziona"
-        Me.Chk_Seleziona.Size = New System.Drawing.Size(125, 19)
+        Me.Chk_Seleziona.Size = New System.Drawing.Size(182, 26)
         Me.Chk_Seleziona.TabIndex = 2
         Me.Chk_Seleziona.Text = "Check/uncheck all"
         Me.Chk_Seleziona.UseVisualStyleBackColor = True
@@ -102,14 +102,14 @@ Partial Class Principale
         Me.Txt_SalvaIn.Location = New System.Drawing.Point(13, 404)
         Me.Txt_SalvaIn.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
         Me.Txt_SalvaIn.Name = "Txt_SalvaIn"
-        Me.Txt_SalvaIn.Size = New System.Drawing.Size(417, 21)
+        Me.Txt_SalvaIn.Size = New System.Drawing.Size(403, 28)
         Me.Txt_SalvaIn.TabIndex = 4
         '
         'Btn_SalvaIn
         '
-        Me.Btn_SalvaIn.Location = New System.Drawing.Point(437, 403)
+        Me.Btn_SalvaIn.Location = New System.Drawing.Point(423, 403)
         Me.Btn_SalvaIn.Name = "Btn_SalvaIn"
-        Me.Btn_SalvaIn.Size = New System.Drawing.Size(85, 23)
+        Me.Btn_SalvaIn.Size = New System.Drawing.Size(99, 23)
         Me.Btn_SalvaIn.TabIndex = 5
         Me.Btn_SalvaIn.Text = "&Save to..."
         Me.Btn_SalvaIn.UseVisualStyleBackColor = True
@@ -134,7 +134,7 @@ Partial Class Principale
         Me.Lbl_Download.Location = New System.Drawing.Point(51, 495)
         Me.Lbl_Download.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Lbl_Download.Name = "Lbl_Download"
-        Me.Lbl_Download.Size = New System.Drawing.Size(36, 15)
+        Me.Lbl_Download.Size = New System.Drawing.Size(52, 22)
         Me.Lbl_Download.TabIndex = 0
         Me.Lbl_Download.Text = "Song"
         '
@@ -144,7 +144,7 @@ Partial Class Principale
         Me.Lbl_Canzone.Location = New System.Drawing.Point(51, 528)
         Me.Lbl_Canzone.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Lbl_Canzone.Name = "Lbl_Canzone"
-        Me.Lbl_Canzone.Size = New System.Drawing.Size(42, 15)
+        Me.Lbl_Canzone.Size = New System.Drawing.Size(60, 22)
         Me.Lbl_Canzone.TabIndex = 0
         Me.Lbl_Canzone.Text = "Album"
         '
@@ -152,9 +152,9 @@ Partial Class Principale
         '
         Me.Btn_Scarica.Enabled = False
         Me.Btn_Scarica.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Btn_Scarica.Location = New System.Drawing.Point(12, 447)
+        Me.Btn_Scarica.Location = New System.Drawing.Point(12, 431)
         Me.Btn_Scarica.Name = "Btn_Scarica"
-        Me.Btn_Scarica.Size = New System.Drawing.Size(418, 23)
+        Me.Btn_Scarica.Size = New System.Drawing.Size(510, 23)
         Me.Btn_Scarica.TabIndex = 6
         Me.Btn_Scarica.Text = "&Download!"
         Me.Btn_Scarica.UseVisualStyleBackColor = True
@@ -165,7 +165,7 @@ Partial Class Principale
         Me.Lbl_Album.Location = New System.Drawing.Point(51, 567)
         Me.Lbl_Album.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Lbl_Album.Name = "Lbl_Album"
-        Me.Lbl_Album.Size = New System.Drawing.Size(34, 15)
+        Me.Lbl_Album.Size = New System.Drawing.Size(51, 22)
         Me.Lbl_Album.TabIndex = 0
         Me.Lbl_Album.Text = "Total"
         '
@@ -181,7 +181,7 @@ Partial Class Principale
         Me.Lnk_Info.AutoSize = True
         Me.Lnk_Info.Location = New System.Drawing.Point(485, 4)
         Me.Lnk_Info.Name = "Lnk_Info"
-        Me.Lnk_Info.Size = New System.Drawing.Size(45, 15)
+        Me.Lnk_Info.Size = New System.Drawing.Size(66, 22)
         Me.Lnk_Info.TabIndex = 7
         Me.Lnk_Info.TabStop = True
         Me.Lnk_Info.Text = "(?) Info"
@@ -229,22 +229,21 @@ Partial Class Principale
         Me.TimerVelocità.Enabled = True
         Me.TimerVelocità.Interval = 1000
         '
-        'Chk_IncludeFlac
+        'Chk_IncludeAll
         '
-        Me.Chk_IncludeFlac.AutoSize = True
-        Me.Chk_IncludeFlac.Location = New System.Drawing.Point(437, 450)
-        Me.Chk_IncludeFlac.Name = "Chk_IncludeFlac"
-        Me.Chk_IncludeFlac.Size = New System.Drawing.Size(88, 19)
-        Me.Chk_IncludeFlac.TabIndex = 9
-        Me.Chk_IncludeFlac.Text = "Include flac"
-        Me.Chk_IncludeFlac.UseVisualStyleBackColor = True
+        Me.Chk_IncludeAll.Location = New System.Drawing.Point(12, 457)
+        Me.Chk_IncludeAll.Name = "Chk_IncludeAll"
+        Me.Chk_IncludeAll.Size = New System.Drawing.Size(510, 20)
+        Me.Chk_IncludeAll.TabIndex = 9
+        Me.Chk_IncludeAll.Text = "Download all available formats"
+        Me.Chk_IncludeAll.UseVisualStyleBackColor = True
         '
         'Principale
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 15.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(10.0!, 22.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(534, 611)
-        Me.Controls.Add(Me.Chk_IncludeFlac)
+        Me.Controls.Add(Me.Chk_IncludeAll)
         Me.Controls.Add(Me.Lsv_Risultati)
         Me.Controls.Add(Me.PictureBox3)
         Me.Controls.Add(Me.PictureBox2)
@@ -300,5 +299,5 @@ Partial Class Principale
     Friend WithEvents PictureBox3 As PictureBox
     Friend WithEvents Lsv_Risultati As ListView
     Friend WithEvents TimerVelocità As Timer
-    Friend WithEvents Chk_IncludeFlac As CheckBox
+    Friend WithEvents Chk_IncludeAll As CheckBox
 End Class

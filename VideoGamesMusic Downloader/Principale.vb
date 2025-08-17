@@ -256,7 +256,7 @@ THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                                            Dim sTemp As String = SongMatch.Groups(1).Value.Split("."c).Last
                                            If Not SongName.EndsWith(sTemp) Then SongName &= "." & sTemp
 
-                                           If (SongName.EndsWith(".flac") And Not Chk_IncludeFlac.Checked) Then Continue For
+                                           If (Not SongName.EndsWith(".mp3") And Not Chk_IncludeAll.Checked) Then Continue For
 
                                            Lbl_Canzone.InvocaMetodoSicuro(Sub() Lbl_Canzone.Text =
                                                                           String.Format("[{0} / {1}] {2}", CreaUnaVariabileLocaleMahIlRitorno + 1, SongMatches.Count, SongName))
@@ -266,15 +266,9 @@ THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                                            Dim ClearSongName As String = SongName.RimuoviIllegal("_")
 
                                            ' Controllo se il file già esiste
-                                           Dim OriginalClearSongName As String = GetFileNameAndExtension(ClearSongName).Key
-                                           Dim AlreadyExistsCount As Integer = 1
-                                           While File.Exists(ClearPath & "\" & ClearSongName)
-                                               ClearSongName = String.Format("{0} ({1}).{2}", OriginalClearSongName, AlreadyExistsCount, GetFileNameAndExtension(ClearSongName).Value)
+                                           ClearSongName = UniqueFile(New FileInfo(Path.Combine(ClearPath, $"{CreaUnaVariabileLocaleMahIlRitorno + 1}. {ClearSongName}")))
 
-                                               AlreadyExistsCount += 1
-                                           End While
-
-                                           AvviaDownload(SongMatch.Groups(1).Value, $"{ClearPath}\{CreaUnaVariabileLocaleMahIlRitorno + 1}. {ClearSongName}").Wait()
+                                           AvviaDownload(SongMatch.Groups(1).Value, ClearSongName).Wait()
                                        Next
 
 
