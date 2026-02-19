@@ -3,13 +3,13 @@
 
 <div align="center">
   <a href="https://github.com/RallyTuning/VideoGamesMusic-Downloader/blob/main/LICENSE.md">
-  <img alt="GPL 3.0 License" src="https://img.shields.io/github/license/RallyTuning/VideoGamesMusic-Downloader?label=License"/></a>
+  <img alt="MIT License" src="https://img.shields.io/github/license/RallyTuning/VideoGamesMusic-Downloader?style=flat&label=License"/></a>
   <a href="https://github.com/RallyTuning/VideoGamesMusic-Downloader/releases">
   <img alt="Releases" src="https://img.shields.io/github/v/release/RallyTuning/VideoGamesMusic-Downloader?label=Release"/></a>
   <a href="https://github.com/RallyTuning/VideoGamesMusic-Downloader/releases">
-  <img alt="Download" src="https://img.shields.io/github/downloads/RallyTuning/VideoGamesMusic-Downloader/total?color=%23d24dff&label=Downloads"/></a>
+  <img alt="Download" src="https://img.shields.io/github/downloads-pre/RallyTuning/VideoGamesMusic-Downloader/latest/total?label=Downloads"/></a>
   <a href="https://github.com/RallyTuning/VideoGamesMusic-Downloader/stargazers">
-  <img alt="Stars" src="https://img.shields.io/github/stars/RallyTuning/VideoGamesMusic-Downloader?color=%23ffff00&label=Stars"/></a>
+  <img alt="Stars" src="https://img.shields.io/github/stars/RallyTuning/VideoGamesMusic-Downloader?style=flat&label=Stars&color=red"/></a>
   <a href="https://github.com/RallyTuning/VideoGamesMusic-Downloader/issues">
   <img alt="Issues" src="https://img.shields.io/github/issues-raw/RallyTuning/VideoGamesMusic-Downloader?label=Issues"/></a>
 </div>
