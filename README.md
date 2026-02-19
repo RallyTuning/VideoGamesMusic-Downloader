@@ -2,8 +2,6 @@
 <p align="center">🎶 Bot for download videogames music!</p>
 
 <div align="center">
-  <a href="https://github.com/RallyTuning/VideoGamesMusic-Downloader/blob/main/LICENSE.md">
-  <img alt="MIT License" src="https://img.shields.io/github/license/RallyTuning/VideoGamesMusic-Downloader?style=flat&label=License"/></a>
   <a href="https://github.com/RallyTuning/VideoGamesMusic-Downloader/releases">
   <img alt="Releases" src="https://img.shields.io/github/v/release/RallyTuning/VideoGamesMusic-Downloader?label=Release"/></a>
   <a href="https://github.com/RallyTuning/VideoGamesMusic-Downloader/releases">
