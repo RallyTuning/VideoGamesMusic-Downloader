@@ -3,10 +3,16 @@ Imports System.Linq.Expressions
 Imports System.Net
 Imports System.Runtime.CompilerServices
 Imports System.Text.RegularExpressions
+Imports System.Threading
 
 Module Funzioni
 
     Friend ReadOnly SitoBase As String = "https://downloads.khinsider.com"
+
+    ' Global memory for WinHTTP (optimized for high performance)
+    Private ReadOnly RndGlobale As New Random()
+    Private UltimoUrlVisitato As String = String.Empty
+    Private SessioneWinHttp As Object = Nothing
 
 #Region " Thread "
 
@@ -178,20 +184,69 @@ Module Funzioni
     Friend Function OttieniHTML(Query As String) As String
         Try
             Dim UriSito As Uri = Nothing
-            Dim TheHTML As String = String.Empty
-            Uri.TryCreate(Query, UriKind.RelativeOrAbsolute, UriSito)
+            If Not Uri.TryCreate(Query, UriKind.RelativeOrAbsolute, UriSito) Then Return Nothing
 
-            Using WC As New WebClientWithTimeout
-                WC.Headers.Add(Net.HttpRequestHeader.UserAgent, "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36")
-                WC.Encoding = System.Text.Encoding.UTF8
-                WC.CachePolicy = New System.Net.Cache.RequestCachePolicy(System.Net.Cache.RequestCacheLevel.NoCacheNoStore)
-                WC.Timeout = 30000
-                WC.KeepAlive = True
-                TheHTML = WC.DownloadStringTaskAsync(UriSito).Result
-            End Using
+            ' A short pause to avoid being flagged as a bot by Cloudflare (or similar services)
+            Thread.Sleep(RndGlobale.Next(300, 700))
 
-            Return TheHTML
+            ' COM inizialization is required for WinHTTP to work properly. This is done only once at the start of the application
+            If SessioneWinHttp Is Nothing Then
+                SessioneWinHttp = CreateObject("WinHttp.WinHttpRequest.5.1")
+
+                With SessioneWinHttp
+                    ' SetTimeouts for DNS resolution (3s), Connection (5s), Send (10s), Receive (15s)
+                    .SetTimeouts(3000, 5000, 10000, 15000)
+                    .Option(6) = True ' Abilita i Redirect automatici
+
+                    ' Enabling TLS 1.3 is optional, but it can improve performance and security. If the system does not support TLS 1.3, it will fallback to TLS 1.2
+                    Try
+                        .Option(9) = 10240
+                    Catch
+                        .Option(9) = 2048 ' Secure fallback to TLS 1.2
+                    End Try
+                End With
+            End If
+
+            With SessioneWinHttp
+                .Open("GET", Query, False)
+
+                ' Lightweight and targeted headers to bypass Cloudflare and similar services. The User-Agent is set to a common browser to avoid being flagged as a bot
+                .SetRequestHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:123.0) Gecko/20100101 Firefox/123.0")
+                .SetRequestHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8")
+                .SetRequestHeader("Accept-Language", "en-US,en;q=0.5")
+                .SetRequestHeader("Upgrade-Insecure-Requests", "1")
+
+                ' Ultra-fast Referer management (strict-origin-when-cross-origin)
+                If Not String.IsNullOrEmpty(UltimoUrlVisitato) Then
+                    Dim uriPrecedente As New Uri(UltimoUrlVisitato)
+                    If Not String.Equals(uriPrecedente.Host, UriSito.Host, StringComparison.OrdinalIgnoreCase) Then
+                        .SetRequestHeader("Referer", uriPrecedente.GetLeftPart(UriPartial.Authority) & "/")
+                        .SetRequestHeader("Sec-Fetch-Site", "cross-site")
+                    Else
+                        .SetRequestHeader("Referer", UltimoUrlVisitato)
+                        .SetRequestHeader("Sec-Fetch-Site", "same-origin")
+                    End If
+                Else
+                    .SetRequestHeader("Sec-Fetch-Site", "none")
+                End If
+
+                .SetRequestHeader("Sec-Fetch-Mode", "navigate")
+                .SetRequestHeader("Sec-Fetch-User", "?1")
+                .SetRequestHeader("Sec-Fetch-Dest", "document")
+
+                ' Execeution of the request
+                .Send()
+
+                If .Status = 200 Then
+                    UltimoUrlVisitato = Query
+                    Return .ResponseText
+                End If
+            End With
+
+            Return Nothing
         Catch ex As Exception
+            ' If the connection drops or Cloudflare attempts a temporary block, destroy the instance. On the next cycle, a clean COM object will be recreated
+            SessioneWinHttp = Nothing
             Return Nothing
         End Try
     End Function
